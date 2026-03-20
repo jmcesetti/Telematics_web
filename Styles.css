@@ -131,7 +131,17 @@ input, select, textarea { font-family: inherit; }
   flex-shrink: 0;
 }
 .user-info { flex: 1; min-width: 0; }
-.user-name { font-size: 13px; font-weight: 600; color: #fff; truncate: ellipsis; white-space: nowrap; overflow: hidden; }
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    /* Las 3 propiedades mágicas para el truncado: */
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    overflow: hidden;
+    /* Opcional: define un ancho máximo si el contenedor padre no lo limita */
+    max-width: 120px; 
+}
 .user-role {
   font-size: 11px; color: rgba(255,255,255,.45);
   background: rgba(255,255,255,.1);
