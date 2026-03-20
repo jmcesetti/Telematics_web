@@ -1,57 +1,323 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Título de mi Página</title>
-    
-    <link rel="stylesheet" href="styles.css">
-    
-    <style>
-        /* Estilos rápidos para que no se vea tan vacío */
-        body {
-            font-family: sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Geotab Onboarding</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 
-    <header>
-        <h1>Bienvenidos a mi Sitio</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#">Sobre mí</a></li>
-                <li><a href="#">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════════════════ -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">G</div>
+    <div class="logo-text">Geo<span>tab</span> OB</div>
+  </div>
 
-    <hr>
+  <div class="sidebar-section-label">Principal</div>
+  <ul>
+    <li class="nav-item active" data-view="dashboard">
+      <a href="#"><span class="nav-icon">📊</span>Dashboard</a>
+    </li>
+    <li class="nav-item" data-view="clients">
+      <a href="#"><span class="nav-icon">🏢</span>Clientes</a>
+    </li>
+  </ul>
 
-    <main>
-        <section>
-            <h2>Pepe Argento</h2>
-            <p>Este es un párrafo de ejemplo. Aquí es donde va el contenido más importante de tu web.</p>
-        </section>
+  <div class="sidebar-section-label">Vistas</div>
+  <ul>
+    <li class="nav-item" data-view="kanban">
+      <a href="#"><span class="nav-icon">🗂</span>Pipeline Kanban</a>
+    </li>
+    <li class="nav-item" data-view="calendar">
+      <a href="#"><span class="nav-icon">📅</span>Calendario</a>
+    </li>
+  </ul>
 
-        <section>
-            <h2>Otra Sección</h2>
-            <p>Puedes añadir imágenes, listas o formularios en estas áreas.</p>
-        </section>
-    </main>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="user-avatar">AM</div>
+      <div class="user-info">
+        <div class="user-name">Admin User</div>
+        <div class="user-role">Operaciones</div>
+      </div>
+    </div>
+  </div>
+</aside>
 
-    <hr>
+<!-- ═══════════════════════════════════════════════════════════
+     APP SHELL
+════════════════════════════════════════════════════════════ -->
+<div id="app">
 
-    <footer>
-        <p>&copy; 2026 Mi Nombre o Empresa</p>
-    </footer>
+  <!-- HEADER -->
+  <header id="header">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="global-search" placeholder="Buscar cliente…"/>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon notif-dot" title="Alertas">🔔</button>
+      <button class="btn btn-primary" onclick="openNewModal()">+ Nuevo Cliente</button>
+    </div>
+  </header>
 
-    <script src="script.js"></script>
+  <!-- CONTENT -->
+  <main id="content">
+
+    <!-- ─── DASHBOARD ────────────────────────────────────── -->
+    <section class="view active" id="view-dashboard">
+
+      <div id="kpi-grid" class="kpi-grid"></div>
+
+      <div class="grid-3">
+
+        <!-- Recent clients + chart -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Distribución por Etapa</div>
+                <div class="section-sub">Últimos 30 días</div>
+              </div>
+            </div>
+            <div id="dash-chart" class="mini-chart"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Clientes Recientes</div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('clients')">Ver todos</button>
+            </div>
+            <div id="recent-clients" class="client-list"></div>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="card" style="align-self:start">
+          <div class="section-header">
+            <div>
+              <div class="section-title">⚠ Alertas</div>
+              <div class="section-sub">Requieren atención</div>
+            </div>
+          </div>
+          <div id="alerts-list" class="alerts-list"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── CLIENTS ──────────────────────────────────────── -->
+    <section class="view" id="view-clients">
+
+      <div class="section-header" style="margin-bottom:16px">
+        <div class="section-title">Todos los Clientes</div>
+        <button class="btn btn-primary" onclick="openNewModal()">+ Nuevo Cliente</button>
+      </div>
+
+      <div class="filter-bar">
+        <select id="filter-stage">
+          <option value="">Todas las etapas</option>
+          <option>Demo</option>
+          <option>Negociación</option>
+          <option>Instalación</option>
+          <option>Soporte</option>
+          <option>Consolidado</option>
+        </select>
+        <select id="filter-resp">
+          <option value="">Todos los responsables</option>
+        </select>
+        <input type="text" id="filter-search" placeholder="Buscar empresa o contacto…" style="flex:1;min-width:180px"/>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Empresa / Contacto</th>
+                <th>Estado</th>
+                <th>Responsable</th>
+                <th>Inicio</th>
+                <th>Cierre Est.</th>
+                <th>Días</th>
+                <th>Avance</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── DETAIL ───────────────────────────────────────── -->
+    <section class="view" id="view-detail">
+
+      <div style="margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm" onclick="navigate('clients')">← Volver</button>
+      </div>
+
+      <div id="det-header" class="detail-header"></div>
+
+      <!-- Timeline + tabs side by side -->
+      <div class="grid-2" style="align-items:start">
+
+        <!-- Timeline -->
+        <div class="card">
+          <div class="section-header"><div class="section-title">Progreso del Proceso</div></div>
+          <div id="det-timeline" class="timeline"></div>
+        </div>
+
+        <!-- Tabs -->
+        <div>
+          <div class="detail-tabs">
+            <button class="tab-btn active" data-tab="comercial">💼 Comercial</button>
+            <button class="tab-btn" data-tab="operaciones">🔧 Operaciones</button>
+            <button class="tab-btn" data-tab="soporte">🎓 Soporte</button>
+          </div>
+
+          <div id="tab-comercial"  class="tab-panel active"></div>
+          <div id="tab-operaciones" class="tab-panel"></div>
+          <div id="tab-soporte"    class="tab-panel"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── KANBAN ───────────────────────────────────────── -->
+    <section class="view" id="view-kanban">
+      <div class="section-header" style="margin-bottom:16px">
+        <div class="section-title">Pipeline de Clientes</div>
+        <button class="btn btn-primary" onclick="openNewModal()">+ Nuevo Cliente</button>
+      </div>
+      <div id="kanban-board" class="kanban-board"></div>
+    </section>
+
+    <!-- ─── CALENDAR ─────────────────────────────────────── -->
+    <section class="view" id="view-calendar">
+      <div class="card">
+        <div class="calendar-header">
+          <button class="btn btn-ghost btn-sm" onclick="calPrev()">← Anterior</button>
+          <div class="cal-month" id="cal-month-label"></div>
+          <button class="btn btn-ghost btn-sm" onclick="calNext()">Siguiente →</button>
+        </div>
+
+        <div class="cal-grid">
+          <div class="cal-day-label">Lun</div>
+          <div class="cal-day-label">Mar</div>
+          <div class="cal-day-label">Mié</div>
+          <div class="cal-day-label">Jue</div>
+          <div class="cal-day-label">Vie</div>
+          <div class="cal-day-label">Sáb</div>
+          <div class="cal-day-label">Dom</div>
+        </div>
+
+        <div id="cal-grid" class="cal-grid" style="margin-top:0"></div>
+
+        <div style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap">
+          <div class="inline-info"><span class="cal-event demo" style="display:inline-block">▪</span> <strong>Demo agendada</strong></div>
+          <div class="inline-info"><span class="cal-event install" style="display:inline-block">▪</span> <strong>Instalación</strong></div>
+          <div class="inline-info"><span class="cal-event support" style="display:inline-block">▪</span> <strong>Capacitación / Go-live</strong></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: NEW / EDIT CLIENT
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Nuevo Cliente</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modal-client-id"/>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Empresa *</label>
+          <input type="text" id="f-company" placeholder="Nombre de la empresa"/>
+        </div>
+        <div class="form-group">
+          <label>Contacto principal *</label>
+          <input type="text" id="f-contact" placeholder="Nombre del contacto"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="email@empresa.com"/>
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" id="f-phone" placeholder="+54 …"/>
+        </div>
+        <div class="form-group">
+          <label>Etapa</label>
+          <select id="f-stage"></select>
+        </div>
+        <div class="form-group">
+          <label>Responsable</label>
+          <select id="f-resp"></select>
+        </div>
+        <div class="form-group">
+          <label>Fecha inicio</label>
+          <input type="date" id="f-start"/>
+        </div>
+        <div class="form-group">
+          <label>Fecha cierre estimada</label>
+          <input type="date" id="f-close"/>
+        </div>
+        <div class="form-group">
+          <label>Vehículos en flota</label>
+          <input type="number" id="f-vehicles" placeholder="0" min="0"/>
+        </div>
+        <div class="form-group">
+          <label>Valor negocio ($)</label>
+          <input type="number" id="f-value" placeholder="0" min="0"/>
+        </div>
+        <div class="form-group full">
+          <label>Notas</label>
+          <textarea id="f-notes" placeholder="Observaciones, contexto, puntos clave…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveClient()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: CHANGE STAGE
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="cs-overlay">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-header">
+      <div class="modal-title">Cambiar Etapa</div>
+      <button class="modal-close" onclick="closeStageModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cs-client-id"/>
+      <div class="form-group">
+        <label>Nueva etapa</label>
+        <select id="cs-stage"></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeStageModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveStage()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
